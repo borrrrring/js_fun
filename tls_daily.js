@@ -50,7 +50,7 @@ if (isGetCookie = typeof $request !== `undefined`) {
     for (var type of [
         "AddInteraction",   // 完成牧牧乐园任务
         "ClickSign",        // 收集草种-每日签到
-        "GetLaunchReward",  // 收集草种-加餐奖励（12:00-13:00）
+        "GetLunchAward",  // 收集草种-加餐奖励（12:00-13:00）
         "GetUserInfo",      // 获取用户信息
         "PlantGrassSeed",   // 种植草种
         "TakeMilk",         // 喂食 
