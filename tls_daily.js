@@ -4,6 +4,9 @@ Author: Kenji
 Last Updated: 2021/04/25 11:00
 Usage:
     quanx:
+        [rewrite_remote]
+        https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.conf, tag=特仑苏, update-interval=86400, opt-parser=false, enabled=true
+        或者
         mitm = xw.mengniu.cn
         [rewrite_local] 
         https:\/\/xw\.mengniu\.cn url script-request-header https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js
