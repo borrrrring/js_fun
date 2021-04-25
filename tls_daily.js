@@ -6,9 +6,9 @@ Usage:
     quanx:
         mitm = xw.mengniu.cn
         [rewrite_local] 
-        https:\/\/xw\.mengniu\.cn url script-request-header tls_daily.js
+        https:\/\/xw\.mengniu\.cn url script-request-header https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js
     Loon:
-       http-request https:\/\/xw\.mengniu\.cn script-path=tls_daily.js, requires-body=true, timeout=30, tag=特仑苏获取cookie
+       http-request https:\/\/xw\.mengniu\.cn script-path= https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js, requires-body=true, timeout=30, tag=特仑苏获取cookie
 
     操作步骤：
         首先使用工具添加上述参数，然后打开微信小程序“向往的生活”，进入首页后手动运行该脚本即可。
@@ -18,7 +18,7 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/04/25 14:05"
+$.lastUpdate = "2021/04/25 11:00"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
