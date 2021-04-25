@@ -2,7 +2,7 @@
   "name": "js_fun tasks",
   "task": [
     {
-      "config": "0 0 * * * https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js, tag=特仑苏, enabled=false"
+      "config": "0 0 * * * https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js, tag=特仑苏, img-url=https://raw.githubusercontent.com/dawangLM/123/main/tls.jpeg, enabled=false"
     }
   ],
   "description": "https://github.com/borrrrring/js_fun"
