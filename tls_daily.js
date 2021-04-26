@@ -1,7 +1,7 @@
 /**
 
 Author: Kenji
-Last Updated: 2021/04/25 11:00
+Last Updated: 2021/04/26 9:40
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,11 +21,11 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/04/25 11:00"
+$.lastUpdate = "2021/04/26 9:40"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
-$.cookie = $.getdata("tls_daily_ck")
+$.cookie = "SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1619398846|1619395032; ASP.NET_SessionId=qymsi2h15pszhujacco1q5vc; HWWAFSESID=116b27654849308e4c; HWWAFSESTIME=1619395030820"//$.getdata("tls_daily_ck")
 // 是否推送（默认关闭）
 $.showAlert = false
 // 推送信息
@@ -41,15 +41,15 @@ if (isGetCookie = typeof $request !== `undefined`) {
 }
 
 !(async () => {
-    if (! $.cookie) {
+    if (!$.cookie) {
         if ($.showAlert) {
             $.msg($.name, '', '请先打开微信小程序“向往的生活”获取cookie');
         } else {
-            $.log('\n请先打开微信小程序“向往的生活”获取cookie\n');
+            $.log('\n请先打开微信小程序“向往的生活”获取cookie');
         }
         return;
     }
-    $.log(`\ncookie = ${$.cookie}\n`);
+    $.log(`你的Cookie是\n${$.cookie}`);
     for (var type of [
         "AddInteraction",   // 完成牧牧乐园任务
         "ClickSign",        // 收集草种-每日签到
@@ -108,57 +108,73 @@ function tls(type, task) {
             options,
             async (err, resp, data) => {
                 try {
-                    $.log(`\n${data}\n`);
-                    $.message += "\n"
-                    $.message += data
-
+                    // $.log(`\n${data}\n`);
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
                     let errcode = results.errcode;
                     let errmsg = results.errmsg;
                     if (errcode != 0) {
-                        $.log(`\n${errmsg}\n`);
+                        $.log(`\n${errmsg}`);
                         resolve();
+                        return;
                     }
-                    let userid = ""
-                    let nickname = "";
-                    let signcount = "";
-                    let milk = "";
-                    let answerlist = []
-                    if (results.hasOwnProperty("result")) {
-                        let result = results.result;
-                        if (result.hasOwnProperty("nickname")) {
-                            nickname = result.nickname;
-                        }
-                        if (result.hasOwnProperty("id")) {
-                            userid = result.id;
-                        }
-                        if (result.hasOwnProperty("signcount")) {
-                            signcount = result.signcount;
-                        }
-                        if (result.hasOwnProperty("grass_seed")) {
-                            $.grass_seed = result.grass_seed;
-                        }
-                        if (result.hasOwnProperty("milk")) {
-                            milk = result.milk;
-                        }
-                        if (result.hasOwnProperty("answerlist")) {
-                            answerlist = result.answerlist;
-                        }
-                    }
-                    if (nickname.length > 0) {
-                        $.log(`\n\n\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴\n\n\n`)
-                    }
-                    if (answerlist.length > 0) {
-                        var answer = ""
-                        var index = 0
+                    switch (type) {
+                        case "AddInteraction":
+                            switch (task) {
+                                case "susuMeijia":
+                                    $.message += '\n完成牧牧乐园-美甲成功, 奶滴 +1';
+                                    break;
+                                case "susuRiguangyu":
+                                    $.message += '\n完成牧牧乐园-听音乐成功, 奶滴 +1';
+                                    break;
+                                case "susuHuli":
+                                    $.message += '\n完成牧牧乐园-护理成功, 奶滴 +1';
+                                break;
 
-                        for (const obj of answerlist) {
-                            if (index > 0 && index % 4 == 0) { answer += " "; }
-                            answer += obj.answer_right
-                            index += 1;
-                        }
-                        $.log("\n\n\n🎊🎊🎊 特仑苏限时闯关正确答案：" + answer + "\n\n\n")
+                                default:
+                                    break;
+                            }
+                            break;
+                        case "ClickSign":
+                            $.message += '\n收集草种-每日签到成功'
+                            break;
+                        case "GetLunchAward":
+                            $.message += '\n收集草种-加餐奖励（12:00-13:00）成功'
+                            break;
+                        case "GetUserInfo":
+                            let userid = results.result.id;
+                            let nickname = results.result.nickname;
+                            let signcount = results.result.signcount;
+                            let milk = results.result.milk;
+                            $.message += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
+                            break;
+                        case "PlantGrassSeed":
+                            $.message += '\n种植草种成功'
+                            break;
+                        case "TakeMilk":
+                            $.message += '\n喂食成功'
+                            break;
+                        case "Getanswer":
+                            let answerlist = results.result.answerlist;
+                            if (answerlist != 'null' && answerlist.length > 0) {
+                                var answer = ""
+                                var index = 0
+        
+                                for (const obj of answerlist) {
+                                    if (index > 0 && index % 4 == 0) { answer += " "; }
+                                    answer += obj.answer_right
+                                    index += 1;
+                                }
+                                $.log(`\n🎊🎊🎊 特仑苏限时闯关正确答案：${answer}`)
+                            }
+                            break;
+                        case "AddShare":
+                            $.message += '\n助力成功'
+                            break;
+
+                        default:
+                            break;
                     }
+                    
                 } catch (e) {
                     $.logErr(e, resp);
                 } finally {
@@ -201,7 +217,7 @@ function showMsg() {
         if ($.showAlert) {
             $.msg($.name, '', `${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`);
         } else {
-            $.log(`\n该脚本最后更新于：${$.lastUpdate} by Kenji\n\n\n`)
+            $.log(`${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`)
         }
         resolve();
     });
