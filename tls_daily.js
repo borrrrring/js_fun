@@ -25,7 +25,7 @@ $.lastUpdate = "2021/04/26 9:40"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
-$.cookie = "SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1619398846|1619395032; ASP.NET_SessionId=qymsi2h15pszhujacco1q5vc; HWWAFSESID=116b27654849308e4c; HWWAFSESTIME=1619395030820"//$.getdata("tls_daily_ck")
+$.cookie = $.getdata("tls_daily_ck")
 // 是否推送（默认关闭）
 $.showAlert = false
 // 推送信息
@@ -145,6 +145,7 @@ function tls(type, task) {
                             let nickname = results.result.nickname;
                             let signcount = results.result.signcount;
                             let milk = results.result.milk;
+                            $.grass_seed = results.result.grass_seed;
                             $.message += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
                             break;
                         case "PlantGrassSeed":
