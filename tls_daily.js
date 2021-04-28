@@ -78,7 +78,9 @@ if (isGetCookie = typeof $request !== `undefined`) {
                 break;
             case "AddShare":
                 if ($.helpAuthor) {
-                    await tls(type);
+                    for (const userId of ["64563", "71603"]) {
+                        await tls(type, "", userId);
+                    }
                 }
                 break;
             default:
@@ -92,7 +94,7 @@ if (isGetCookie = typeof $request !== `undefined`) {
     .catch((e) => $.logErr(e))
     .finally(() => $.done());
 
-function tls(type, task) {
+function tls(type, task, userId) {
     return new Promise(async (resolve) => {
         var options = taskUrl(type)
         switch (type) {
@@ -100,7 +102,7 @@ function tls(type, task) {
                 options["body"] = `InterName=${task}`;
                 break;
             case "AddShare":
-                options["body"] = `userid=64563`;
+                options["body"] = `userid=${userId}`;
                 break;
             default: break;
         }
