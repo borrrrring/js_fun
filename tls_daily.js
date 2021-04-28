@@ -1,7 +1,7 @@
 /**
 
 Author: Kenji
-Last Updated: 2021/04/28 15:20
+Last Updated: 2021/04/29 00:50
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,7 +21,7 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/04/28 15:20"
+$.lastUpdate = "2021/04/29 00:50"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
@@ -179,7 +179,7 @@ function dealWithResult(type, task, results) {
                 } else {
                     $.log('\nCookie已过期，请先打开微信小程序“向往的生活”获取cookie');
                 }
-                if ($.isNode) {
+                if ($.isNode()) {
                     process.exit();
                 } else {
                     $.done();
