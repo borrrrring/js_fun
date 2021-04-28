@@ -1,7 +1,10 @@
+const { type } = require("os");
+const { resolve } = require("path");
+
 /**
 
 Author: Kenji
-Last Updated: 2021/04/26 9:40
+Last Updated: 2021/04/28 15:05
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,11 +24,11 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/04/26 9:40"
+$.lastUpdate = "2021/04/28 15:05"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
-$.cookie = $.getdata("tls_daily_ck")
+$.cookie = "SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1619591286|1619585321; ASP.NET_SessionId=4d2vb5hfysxssm03g0t1lmev; HWWAFSESID=c7436766698809d881; HWWAFSESTIME=1619585320709"//$.getdata("tls_daily_ck")
 // 是否推送（默认关闭）
 $.showAlert = false
 // 推送信息
@@ -110,72 +113,7 @@ function tls(type, task) {
                 try {
                     // $.log(`\n${data}\n`);
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
-                    let errcode = results.errcode;
-                    let errmsg = results.errmsg;
-                    if (errcode != 0) {
-                        $.log(`\n${errmsg}`);
-                        resolve();
-                        return;
-                    }
-                    switch (type) {
-                        case "AddInteraction":
-                            switch (task) {
-                                case "susuMeijia":
-                                    $.message += '\n完成牧牧乐园-美甲成功, 奶滴 +1';
-                                    break;
-                                case "susuRiguangyu":
-                                    $.message += '\n完成牧牧乐园-听音乐成功, 奶滴 +1';
-                                    break;
-                                case "susuHuli":
-                                    $.message += '\n完成牧牧乐园-护理成功, 奶滴 +1';
-                                break;
-
-                                default:
-                                    break;
-                            }
-                            break;
-                        case "ClickSign":
-                            $.message += '\n收集草种-每日签到成功'
-                            break;
-                        case "GetLunchAward":
-                            $.message += '\n收集草种-加餐奖励（12:00-13:00）成功'
-                            break;
-                        case "GetUserInfo":
-                            let userid = results.result.id;
-                            let nickname = results.result.nickname;
-                            let signcount = results.result.signcount;
-                            let milk = results.result.milk;
-                            $.grass_seed = results.result.grass_seed;
-                            $.message += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
-                            break;
-                        case "PlantGrassSeed":
-                            $.message += '\n种植草种成功'
-                            break;
-                        case "TakeMilk":
-                            $.message += '\n喂食成功'
-                            break;
-                        case "Getanswer":
-                            let answerlist = results.result.answerlist;
-                            if (answerlist != 'null' && answerlist.length > 0) {
-                                var answer = ""
-                                var index = 0
-        
-                                for (const obj of answerlist) {
-                                    if (index > 0 && index % 4 == 0) { answer += " "; }
-                                    answer += obj.answer_right
-                                    index += 1;
-                                }
-                                $.log(`\n🎊🎊🎊 特仑苏限时闯关正确答案：${answer}`)
-                            }
-                            break;
-                        case "AddShare":
-                            $.message += '\n助力成功'
-                            break;
-
-                        default:
-                            break;
-                    }
-                    
+                    await dealWithResult(type, task, results);
                 } catch (e) {
                     $.logErr(e, resp);
                 } finally {
@@ -184,6 +122,120 @@ function tls(type, task) {
             }
         );
     });
+}
+
+function dealWithResult(type, task, results) {
+    return new Promise((resolve) => {
+        let errcode = results.errcode;
+        let errmsg = results.errmsg;
+
+        let msg = "";
+        switch (type) {
+            case "AddInteraction":
+                switch (task) {
+                    case "susuMeijia":
+                        msg = '\n完成牧牧乐园-美甲';
+                        break;
+                    case "susuRiguangyu":
+                        msg = '\n完成牧牧乐园-听音乐';
+                        break;
+                    case "susuHuli":
+                        msg = '\n完成牧牧乐园-护理';
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+            case "ClickSign":
+                msg = '\n收集草种-每日签到'
+                break;
+            case "GetLunchAward":
+                msg = '\n收集草种-加餐奖励（12:00-13:00）'
+                break;
+            case "GetUserInfo":
+                msg = `\n获取用户信息`;
+                break;
+            case "PlantGrassSeed":
+                msg = '\n种植草种'
+                break;
+            case "TakeMilk":
+                msg = '\n喂食'
+                break;
+            case "Getanswer":
+                msg = '\n获取特仑苏限时闯关正确答案'
+                break;
+            case "AddShare":
+                msg = '\n助力'
+                break;
+
+            default:
+                break;
+        }
+
+        if (errcode != 0) {
+            if (errmsg.indexOf("没有授权") != -1) {
+                if ($.showAlert) {
+                    $.msg($.name, '', 'Cookie已过期，请先打开微信小程序“向往的生活”获取cookie');
+                } else {
+                    $.log('\nCookie已过期，请先打开微信小程序“向往的生活”获取cookie');
+                }
+                if ($.isNode) {
+                    process.exit();
+                } else {
+                    $.done();
+                }
+            } else {
+                $.log(`${msg}失败\n${errmsg}`);
+            }
+            resolve();
+            return;
+        }
+        if (type == "AddInteraction") {
+            msg += "成功, 奶滴 +1";
+
+            $.message += msg
+        } else  if (type == "GetUserInfo") {
+            msg += "成功";
+
+            let userid = results.result.id;
+            let nickname = results.result.nickname;
+            let signcount = results.result.signcount;
+            let milk = results.result.milk;
+            $.grass_seed = results.result.grass_seed;
+
+            msg += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
+
+            $.message += msg
+        } else if (type == "Getanswer") {
+            let answerlist = results.result.answerlist;
+            if (answerlist != 'null' && answerlist.length > 0) {
+                msg += "成功";
+
+                var answer = "";
+                var index = 0;
+
+                for (const obj of answerlist) {
+                    if (index > 0 && index % 4 == 0) { answer += " "; };
+                    answer += obj.answer_right;
+                    index += 1;
+                }
+                msg += `\n🎊🎊🎊 特仑苏限时闯关正确答案：${answer}`;
+
+                $.message += msg
+            } else {
+                msg += "失败";
+                msg += "\n活动时间：每周六12:00-周日23:59";
+            }
+        } else {
+            msg += "成功";
+
+            $.message += msg
+        }
+
+        $.log(msg);
+        resolve();
+    })
 }
 
 function sleep() {
