@@ -41,9 +41,9 @@ async function main() {
   try {
     if (!$.cookie) {
       if ($.showAlert) {
-        $.msg($.name, '', '请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
+        $.msg($.name, '', '请先打开微信小程序“向往的生活”获取cookie');
       } else {
-        $.log('\n请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
+        $.log('\n请先打开微信小程序“向往的生活”获取cookie');
       }
       return;
     }
@@ -90,6 +90,7 @@ async function main() {
     await showMsg();
   } catch (e) {
     $.logErr(e)
+  } finally {
     $.done()
   }
 }
