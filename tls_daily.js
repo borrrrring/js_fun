@@ -25,7 +25,7 @@ $.lastUpdate = "2021/04/29 00:50"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = false
 // cookie
-$.cookie = $.getdata("tls_daily_ck")
+$.cookie = "SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1619593502|1619585321; ASP.NET_SessionId=4d2vb5hfysxssm03g0t1lmev; HWWAFSESID=c7436766698809d881; HWWAFSESTIME=1619585320709"//$.getdata("tls_daily_ck")
 // 是否推送（默认关闭）
 $.showAlert = false
 // 推送信息
