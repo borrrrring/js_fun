@@ -41,9 +41,9 @@ async function main() {
     try {
         if (!$.cookie) {
             if ($.showAlert) {
-                $.msg($.name, '', '请先打开微信小程序“向往的生活”获取cookie');
+                $.msg($.name, '', '请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
             } else {
-                $.log('\n请先打开微信小程序“向往的生活”获取cookie');
+                $.log('\n请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
             }
             return;
         }
@@ -177,9 +177,9 @@ function dealWithResult(type, task, results) {
         if (errcode != 0) {
             if (errmsg.indexOf("没有授权") != -1) {
                 if ($.showAlert) {
-                    $.msg($.name, '', 'Cookie已过期，请先打开微信小程序“向往的生活”获取cookie');
+                    $.msg($.name, '', 'Cookie已过期，请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
                 } else {
-                    $.log('\nCookie已过期，请先打开微信小程序“向往的生活”获取cookie');
+                    $.log('\nCookie已过期，请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
                 }
                 if ($.isNode()) {
                     process.exit();
@@ -205,7 +205,7 @@ function dealWithResult(type, task, results) {
             let milk = results.result.milk;
             $.grass_seed = results.result.grass_seed;
 
-            msg += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
+            msg += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 当前拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
 
             $.message += msg
         } else if (type == "Getanswer") {
