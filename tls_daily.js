@@ -62,7 +62,9 @@ async function main() {
           $.answerList = [];
           $.cookie = obj["cookie"];
           $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
-          await run();
+          if (await run()) {
+            continue;
+          }
         }
     } catch (e) {
         $.logErr(e)
@@ -135,13 +137,15 @@ function run() {
                     }
                     break;
                 default:
-                    await tls(type);
+                    if (await tls(type)) {
+                      resolve(true);
+                    }
                     break;
             }
             await $.wait(1*1000)
         }
         await showMsg();
-        resolve();
+        resolve(false);
    })
 }
 
@@ -169,11 +173,13 @@ function tls(type, task, userId) {
                       $.log(`返回消息体\n${data}\n`);
                     }
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
-                    await dealWithResult(type, task, results);
+                    if (await dealWithResult(type, task, results)) {
+                      resolve(true);
+                    }
                 } catch (e) {
                     $.logErr(e, resp);
                 } finally {
-                    resolve();
+                    resolve(false);
                 }
             }
         );
@@ -239,15 +245,11 @@ function dealWithResult(type, task, results) {
                 } else {
                     $.log('\nCookie已过期，请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
                 }
-                if ($.isNode()) {
-                    process.exit();
-                } else {
-                    $.done({});
-                }
+                resolve(true);
             } else {
                 $.log(`${msg}失败\n${errmsg}`);
             }
-            resolve();
+            resolve(false);
             return;
         }
         if (type == "AddInteraction") {
@@ -321,7 +323,7 @@ function dealWithResult(type, task, results) {
         }
 
         $.log(msg);
-        resolve();
+        resolve(false);
     })
 }
 
