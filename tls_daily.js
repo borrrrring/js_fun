@@ -397,7 +397,7 @@ function getCookie() {
             }
             
             var ret = $.setdata(finalCookies, "tls_daily_ck");
-            if ($.showCKAlert) {
+            if ($.showCKAlert && ret) {
                 $.msg($.name, '写入ck成功', $.getdata("tls_daily_ck"));
             }
         }
