@@ -37,6 +37,8 @@ $.grass_seed = 0
 // 自动答题
 $.autoAnswer = true
 $.answerList = []
+// 打印response data
+$.debugLog = false
 const isRequest = typeof $request != "undefined";
 isRequest ? getCookie() : main();
 
@@ -133,7 +135,9 @@ function tls(type, task, userId) {
             options,
             async (err, resp, data) => {
                 try {
-                    // $.log(`\n${data}\n`);
+                    if ($.debugLog) {
+                      $.log(`返回消息体\n${data}\n`);
+                    }
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
                     await dealWithResult(type, task, results);
                 } catch (e) {
