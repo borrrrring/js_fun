@@ -90,17 +90,21 @@ async function main() {
                     break;
                 case "AddanswerOrder":
                     if ($.autoAnswer) {
-                      if ($.ispaly) {
-                        $.log("\n本周已经完成闯关。养精蓄锐，下周再来吧！");
-                      } else {
-                        $.log("\n开始自动答题…请等待30秒\n");
-                        let seconds = 0;
-                        while (seconds < 30) {
-                          await $.wait(1*1000);
-                          seconds += 1;
-                          $.log(`${seconds}秒`)
+                      if ($.answerList.length > 0) {
+                        if ($.ispaly) {
+                          $.log("\n本周已经完成闯关。养精蓄锐，下周再来吧！");
+                        } else {
+                          $.log("\n开始自动答题…请等待30秒\n");
+                          let seconds = 0;
+                          while (seconds < 30) {
+                            await $.wait(1*1000);
+                            seconds += 1;
+                            $.log(`${seconds}秒`)
+                          }
+                          await tls(type);
                         }
-                        await tls(type);
+                      } else {
+                        $.log("\n本周闯关尚未开始，活动时间：每周六12:00-周日23:59");
                       }
                     }
                     break;
@@ -277,7 +281,9 @@ function dealWithResult(type, task, results) {
                 $.message += msg
             } else {
                 msg += "失败";
-                msg += "\n活动时间：每周六12:00-周日23:59";
+                if (!$.autoAnswer) {
+                  msg += "\n活动时间：每周六12:00-周日23:59";
+                }
             }
         } else if (type == "AddanswerOrder") {
             msg += "成功";
