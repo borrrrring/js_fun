@@ -36,6 +36,8 @@ $.helpAuthor = true
 $.grass_seed = 0
 // 自动答题
 $.autoAnswer = true
+// 本周是否已答题
+$.ispaly = false
 $.answerList = []
 // 打印response data
 $.debugLog = false
@@ -60,8 +62,8 @@ async function main() {
             "Getanswer",        // 获取限时闯关答案（每周末12:00后）
             "AddanswerOrder",   // 自动答题
             "GetUserInfo",      // 获取用户信息
-            "PlantGrassSeed",   // 种植草种
             "TakeMilk",         // 喂食
+            "PlantGrassSeed",   // 种植草种
             "AddShare"          // 助力
         ]) {
             switch (type) {
@@ -75,23 +77,31 @@ async function main() {
                     }
                     break;
                 case "PlantGrassSeed":
-                    while ($.grass_seed > 100) {
-                        await $.wait(3*1000);
-                        await tls("TakeMilk");
-                        await tls(type);
-                        await tls("GetUserInfo");
+                    if ($.grass_seed < 100) {
+                      $.log("\n每次种植至少需要100g草种哦，快去收集草种再来吧")
+                    } else {
+                      while ($.grass_seed >= 100) {
+                          await tls(type);
+                          await $.wait(3*1000);
+                          await tls("TakeMilk");
+                          await tls("GetUserInfo");
+                      }
                     }
                     break;
                 case "AddanswerOrder":
                     if ($.autoAnswer) {
-                      $.log("\n开始自动答题…请等待30秒\n");
-                      let seconds = 0;
-                      while (seconds < 30) {
-                        await $.wait(1*1000);
-                        seconds += 1;
-                        $.log(`${seconds}秒`)
+                      if ($.ispaly) {
+                        $.log("\n本周已经完成闯关。养精蓄锐，下周再来吧！");
+                      } else {
+                        $.log("\n开始自动答题…请等待30秒\n");
+                        let seconds = 0;
+                        while (seconds < 30) {
+                          await $.wait(1*1000);
+                          seconds += 1;
+                          $.log(`${seconds}秒`)
+                        }
+                        await tls(type);
                       }
-                      await tls(type);
                     }
                     break;
                 case "AddShare":
@@ -237,6 +247,7 @@ function dealWithResult(type, task, results) {
 
             $.message += msg
         } else if (type == "Getanswer") {
+            $.ispaly = results.result.ispaly == 1
             let answerlist = results.result.answerlist;
             if (answerlist != 'null' && answerlist.length > 0) {
                 msg += "成功";
