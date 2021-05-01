@@ -1,7 +1,7 @@
 /**
 
 Author: lxk0301, Kenji
-Last Updated: 2021/05/01 14:50
+Last Updated: 2021/05/01 17:20
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,7 +21,7 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/05/01 14:50"
+$.lastUpdate = "2021/05/01 17:20"
 // 是否推送获取cookie成功
 $.showCKAlert = true
 // cookie
@@ -30,7 +30,7 @@ $.cookie = $.getdata("tls_daily_ck")
 $.showAlert = true
 // 推送信息
 $.message = ""
-// 是否助力作者
+// 是否助力作者，每天 +100g草种
 $.helpAuthor = true
 // 牧草种子数量
 $.grass_seed = 0
@@ -61,10 +61,10 @@ async function main() {
             "GetLunchAward",    // 收集草种-加餐奖励（12:00-13:00）
             "Getanswer",        // 获取限时闯关答案（每周末12:00后）
             "AddanswerOrder",   // 自动答题
+            "AddShare",         // 助力得草种
             "GetUserInfo",      // 获取用户信息
             "TakeMilk",         // 喂食
-            "PlantGrassSeed",   // 种植草种
-            "AddShare"          // 助力
+            "PlantGrassSeed"    // 种植草种
         ]) {
             switch (type) {
                 case "AddInteraction":
@@ -291,6 +291,10 @@ function dealWithResult(type, task, results) {
             msg += `\n获得${getalfalfa}g 草种奖励`;
       
             $.message += msg         
+        } else if (type == "AddShare") {
+            msg += "成功, 草种 +100g";
+
+            $.message += msg
         } else {
             msg += "成功";
 
