@@ -264,6 +264,12 @@ function dealWithResult(type, task, results) {
                 msg += "失败";
                 msg += "\n活动时间：每周六12:00-周日23:59";
             }
+        } else if (type == "GetUserInfo") {
+            msg += "成功";
+            let getalfalfa = results.result.getalfalfa;
+            msg += `\n获得${getalfalfa}g 草种奖励`;
+      
+            $.message += msg         
         } else {
             msg += "成功";
 
