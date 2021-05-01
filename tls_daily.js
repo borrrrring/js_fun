@@ -22,20 +22,20 @@ const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
 $.lastUpdate = "2021/05/01 14:50"
-// 是否推送获取cookie成功（默认关闭）
+// 是否推送获取cookie成功
 $.showCKAlert = true
 // cookie
 $.cookie = $.getdata("tls_daily_ck")
-// 是否推送（默认关闭）
+// 是否推送运行结果
 $.showAlert = true
 // 推送信息
 $.message = ""
-// 是否助力作者（默认开启）
+// 是否助力作者
 $.helpAuthor = true
 // 牧草种子数量
 $.grass_seed = 0
-// 自动答题（慎用，也许奖励没有手动答题高。默认关闭）
-$.autoAnswer = false
+// 自动答题
+$.autoAnswer = true
 $.answerList = []
 const isRequest = typeof $request != "undefined";
 isRequest ? getCookie() : main();
