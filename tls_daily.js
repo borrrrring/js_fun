@@ -70,6 +70,7 @@ async function main() {
                     break;
                 case "PlantGrassSeed":
                     while ($.grass_seed > 100) {
+                        await $.wait(3000);
                         await tls("TakeMilk");
                         await tls(type);
                         await tls("GetUserInfo");
