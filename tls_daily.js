@@ -86,6 +86,7 @@ async function main() {
                           await tls("TakeMilk");
                           await tls("GetUserInfo");
                       }
+                      await tls("GetUserInfo");
                     }
                     break;
                 case "AddanswerOrder":
