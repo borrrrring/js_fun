@@ -1,7 +1,7 @@
 /**
 
 Author: lxk0301, Kenji
-Last Updated: 2021/05/01 17:20
+Last Updated: 2021/05/01 19:30
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,11 +21,12 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/05/01 17:20"
+$.lastUpdate = "2021/05/01 19:30"
 // 是否推送获取cookie成功
 $.showCKAlert = true
-// cookie
-$.cookie = $.getdata("tls_daily_ck")
+// 多账号Cookie数组
+$.cookies = $.getdata("tls_daily_ck")
+$.cookie = ""
 // 是否推送运行结果
 $.showAlert = true
 // 推送信息
@@ -46,7 +47,7 @@ isRequest ? getCookie() : main();
 
 async function main() {
     try {
-        if (!$.cookie) {
+        if (!$.cookies) {
             if ($.showAlert) {
                 $.msg($.name, '', '请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
             } else {
@@ -54,7 +55,24 @@ async function main() {
             }
             return;
         }
-        $.log(`你的Cookie是\n${$.cookie}`);
+
+        let cookies = JSON.parse($.cookies);
+        for (obj of cookies) {
+          $.message = "";
+          $.answerList = [];
+          $.cookie = obj["cookie"];
+          $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
+          await run();
+        }
+    } catch (e) {
+        $.logErr(e)
+    } finally {
+        $.done({})
+    }
+}
+
+function run() {
+   return new Promise(async (resolve) => {
         for (var type of [
             "AddInteraction",   // 完成牧牧乐园任务
             "ClickSign",        // 收集草种-每日签到
@@ -123,11 +141,8 @@ async function main() {
             await $.wait(1*1000)
         }
         await showMsg();
-    } catch (e) {
-        $.logErr(e)
-    } finally {
-        $.done({})
-    }
+        resolve();
+   })
 }
 
 function tls(type, task, userId) {
@@ -344,11 +359,34 @@ function getCookie() {
     try {
         if ($request && $request.method != 'OPTIONS' && $request.url.indexOf("GetMyPrize") >= 0) {
             headers = $request.headers;
-            var newCookie = headers.Cookie;
-            $.log(`COOKIE：\n${newCookie}\n`)
-            var ret = $.setdata(newCookie, "tls_daily_ck");
+            let referer = headers.Referer;
+            let userid = getQueryParam(referer, "UserID");
+            let newCookie = headers.Cookie;
+            
+            $.log(`USERID：\n${userid} COOKIE：\n${newCookie}\n`)
+            let oldCookies;
+            try {
+              oldCookies = JSON.parse($.getdata("tls_daily_ck"));
+            } catch(e) {
+              $.log(e);
+            }
+            let finalCookies = "";
+            if (typeof oldCookies != "undefined" && oldCookies instanceof Array) {
+              for (obj of oldCookies) {
+                if (obj["userid"] == userid && obj["cookie"] != newCookie) {
+                  obj["cookie"] = newCookie;
+                  //$.msg($.name, `更新账号：${userid}`, newCookie);
+                }
+              }
+
+              finalCookies = JSON.stringify(oldCookies);
+            } else {
+              finalCookies = JSON.stringify([{"userid": userid, "cookie": newCookie}]);
+            }
+            
+            var ret = $.setdata(finalCookies, "tls_daily_ck");
             if ($.showCKAlert) {
-                $.msg($.name, '获取ck成功', $.getdata("tls_daily_ck"));
+                $.msg($.name, '写入ck成功', $.getdata("tls_daily_ck"));
             }
         }
         $.done({})
@@ -357,6 +395,26 @@ function getCookie() {
     } finally {
         $.done({})
     }
+}
+
+function getQueryParam(url, key) {
+    if (!key) {
+        return false;
+    }
+
+    var value = '';
+    var paramStr = url.split("?").pop();
+
+    if (paramStr) {
+        paramStr.split('&').forEach(function (param) {
+            var arr = param.split('=');
+            if (arr[0] == key) {
+                value = arr[1];
+            }
+        });
+    }
+
+    return value;
 }
 
 // prettier-ignore
