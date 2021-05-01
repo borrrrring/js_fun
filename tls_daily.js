@@ -34,7 +34,7 @@ $.message = ""
 $.helpAuthor = true
 // 牧草种子数量
 $.grass_seed = 0
-// 自动答题（慎用。也许奖励没有手动答题高）
+// 自动答题（慎用，也许奖励没有手动答题高。默认关闭）
 $.autoAnswer = false
 $.answerList = []
 const isRequest = typeof $request != "undefined";
