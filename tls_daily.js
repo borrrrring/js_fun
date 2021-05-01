@@ -54,12 +54,12 @@ async function main() {
         for (var type of [
             "AddInteraction",   // 完成牧牧乐园任务
             "ClickSign",        // 收集草种-每日签到
-            "GetLunchAward",  // 收集草种-加餐奖励（12:00-13:00）
+            "GetLunchAward",    // 收集草种-加餐奖励（12:00-13:00）
+            "Getanswer",        // 获取限时闯关答案（每周末12:00后）
+            "AddanswerOrder",   // 自动答题
             "GetUserInfo",      // 获取用户信息
             "PlantGrassSeed",   // 种植草种
             "TakeMilk",         // 喂食
-            "Getanswer",        // 获取限时闯关答案（每周末12:00后）
-            "AddanswerOrder",   //答题
             "AddShare"          // 助力
         ]) {
             switch (type) {
