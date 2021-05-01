@@ -1,7 +1,7 @@
 /**
 
 Author: lxk0301, Kenji
-Last Updated: 2021/04/29 10:50
+Last Updated: 2021/05/01 14:50
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,7 +21,7 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/04/29 10:50"
+$.lastUpdate = "2021/05/01 14:50"
 // 是否推送获取cookie成功（默认关闭）
 $.showCKAlert = true
 // cookie
@@ -34,6 +34,9 @@ $.message = ""
 $.helpAuthor = true
 // 牧草种子数量
 $.grass_seed = 0
+// 自动答题（慎用。也许奖励没有手动答题高）
+$.autoAnswer = false
+$.answerList = []
 const isRequest = typeof $request != "undefined";
 isRequest ? getCookie() : main();
 
@@ -56,6 +59,7 @@ async function main() {
             "PlantGrassSeed",   // 种植草种
             "TakeMilk",         // 喂食
             "Getanswer",        // 获取限时闯关答案（每周末12:00后）
+            "AddanswerOrder",   //答题
             "AddShare"          // 助力
         ]) {
             switch (type) {
@@ -70,10 +74,22 @@ async function main() {
                     break;
                 case "PlantGrassSeed":
                     while ($.grass_seed > 100) {
-                        await $.wait(3000);
+                        await $.wait(3*1000);
                         await tls("TakeMilk");
                         await tls(type);
                         await tls("GetUserInfo");
+                    }
+                    break;
+                case "AddanswerOrder":
+                    if ($.autoAnswer) {
+                      $.log("\n开始自动答题…请等待30秒\n");
+                      let seconds = 0;
+                      while (seconds < 30) {
+                        await $.wait(1*1000);
+                        seconds += 1;
+                        $.log(`${seconds}秒`)
+                      }
+                      await tls(type);
                     }
                     break;
                 case "AddShare":
@@ -87,7 +103,7 @@ async function main() {
                     await tls(type);
                     break;
             }
-            await $.wait(1000)
+            await $.wait(1*1000)
         }
         await showMsg();
     } catch (e) {
@@ -106,6 +122,9 @@ function tls(type, task, userId) {
                 break;
             case "AddShare":
                 options["body"] = `userid=${userId}`;
+                break;
+            case "AddanswerOrder":
+                options["body"] = `answerList=${JSON.stringify($.answerList)}&alltime=30`;
                 break;
             default:
                 break;
@@ -168,6 +187,9 @@ function dealWithResult(type, task, results) {
             case "Getanswer":
                 msg = '\n获取特仑苏限时闯关正确答案'
                 break;
+            case "AddanswerOrder":
+                msg = '\n自动答题'
+                break;
             case "AddShare":
                 msg = '\n助力'
                 break;
@@ -225,7 +247,16 @@ function dealWithResult(type, task, results) {
                     ;
                     answer += obj.answer_right;
                     index += 1;
+
+                    // 处理答案
+                    let answerObj = {
+                                        "question_id": `${obj.id}`,
+                                        "question_answer": `${obj.answer_right}`,
+                                        "time_interval": ""
+                                      };
+                                      $.answerList.push(answerObj);
                 }
+
                 msg += `\n🎊🎊🎊 特仑苏限时闯关正确答案：${answer}`;
 
                 $.message += msg
@@ -266,9 +297,9 @@ function taskUrl(function_path) {
 function showMsg() {
     return new Promise(resolve => {
         if ($.showAlert) {
-            $.msg($.name, '', `${$.message}\n该脚本最后更新于：${$.lastUpdate} by lxk0301`);
+            $.msg($.name, '', `${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`);
         } else {
-            $.log(`${$.message}\n该脚本最后更新于：${$.lastUpdate} by lxk0301`)
+            $.log(`${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`)
         }
         resolve();
     });
