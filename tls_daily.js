@@ -235,7 +235,7 @@ function dealWithResult(type, task, results) {
             return;
         }
         if (type == "AddInteraction") {
-            msg += "成功, 奶滴 +1";
+            msg += "成功, 奶滴 +1g";
 
             $.message += msg
         } else if (type == "GetUserInfo") {
@@ -245,9 +245,12 @@ function dealWithResult(type, task, results) {
             let nickname = results.result.nickname;
             let signcount = results.result.signcount;
             let milk = results.result.milk;
+            if (milk >= 300) {
+              $.msg($.name, "已满300g奶滴，快打开小程序去商城兑换吧！");
+            }
             $.grass_seed = results.result.grass_seed;
 
-            msg += `\n💪💪💪 ${nickname}(${userid})已签到${signcount}天, 当前拥有${$.grass_seed}颗牧草种子和${milk}份奶滴`;
+            msg += `\n💪💪💪 ${nickname}(ID：${userid})已签到${signcount}天, 当前拥有${$.grass_seed}颗牧草种子和${milk}g奶滴`;
 
             $.message += msg
         } else if (type == "Getanswer") {
