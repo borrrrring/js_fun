@@ -56,15 +56,25 @@ async function main() {
             return;
         }
 
-        let cookies = JSON.parse($.cookies);
-        for (obj of cookies) {
-          $.message = "";
-          $.answerList = [];
-          $.cookie = obj["cookie"];
-          $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
-          if (await run()) {
-            continue;
+        let cookies; 
+        try {
+            cookies = JSON.parse($.cookies);
+        } catch(e) {
+          $.log(e)
+        }
+        if (typeof cookies != "undefined" && cookies instanceof Array) {
+          for (obj of cookies) {
+            $.message = "";
+            $.answerList = [];
+            $.cookie = obj["cookie"];
+            $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
+            if (await run()) {
+              continue;
+            }
           }
+        } else {
+          $.cookie = $.cookies;
+          await run();
         }
     } catch (e) {
         $.logErr(e)
