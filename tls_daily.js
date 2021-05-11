@@ -386,13 +386,13 @@ function getCookie() {
             if (typeof oldCookies != "undefined" && oldCookies instanceof Array) {
               for (obj of oldCookies) {
                 if (obj["userid"] == userid && obj["cookie"] != newCookie) {
-                  let components = newCookie.split(";");
-                  for ( let element of components) {
-                    if (element.indexOf("ASP.NET") != -1) { 
-                      newCookie = element;
-                      break;
-                    }
-                  }
+                  //let components = newCookie.split(";");
+                  //for ( let element of components) {
+                  //  if (element.indexOf("ASP.NET") != -1) { 
+                  //    newCookie = element;
+                  //    break;
+                  //  }
+                  //}
                   obj["cookie"] = newCookie;
                   //$.msg($.name, `更新账号：${userid}`, newCookie);
                 }
