@@ -1,7 +1,7 @@
 /**
 
 Author: lxk0301, Kenji
-Last Updated: 2021/05/01 19:30
+Last Updated: 2021/05/11 10:10
 Usage:
     quanx:
         [rewrite_remote]
@@ -21,11 +21,11 @@ const $ = new Env("特仑苏")
 const TLS_API_HOST = "https://xw.mengniu.cn/grass/Api/TelunsuHandler.ashx?";
 
 // 最后更新日期
-$.lastUpdate = "2021/05/01 19:30"
+$.lastUpdate = "2021/05/11 10:10"
 // 是否推送获取cookie成功
 $.showCKAlert = true
 // 多账号Cookie数组
-$.cookies = $.getdata("tls_daily_ck") || '[{"userid":"64563","cookie":"SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1620698483|1620697638; ASP.NET_SessionId=cvykc1lrtxfgzj221b2ugpkk; HWWAFSESID=2c5437c2cdff1c5817; HWWAFSESTIME=1620697637782"}]'
+$.cookies = $.getdata("tls_daily_ck")
 $.cookie = ""
 // 是否推送运行结果
 $.showAlert = true
