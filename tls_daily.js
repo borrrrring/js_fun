@@ -25,7 +25,7 @@ $.lastUpdate = "2021/05/01 19:30"
 // 是否推送获取cookie成功
 $.showCKAlert = true
 // 多账号Cookie数组
-$.cookies = $.getdata("tls_daily_ck")
+$.cookies = $.getdata("tls_daily_ck") || '[{"userid":"64563","cookie":"SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1620698483|1620697638; ASP.NET_SessionId=cvykc1lrtxfgzj221b2ugpkk; HWWAFSESID=2c5437c2cdff1c5817; HWWAFSESTIME=1620697637782"}]'
 $.cookie = ""
 // 是否推送运行结果
 $.showAlert = true
@@ -114,7 +114,7 @@ function run() {
                           await tls(type);
                           await $.wait(3*1000);
                           await tls("TakeMilk");
-                          await tls("GetUserInfo");
+                          await tls("GetUserInfo", "", "", true);
                       }
                       await tls("GetUserInfo");
                     }
@@ -159,7 +159,7 @@ function run() {
    })
 }
 
-function tls(type, task, userId) {
+function tls(type, task, userId, isUpdateData) {
     return new Promise(async (resolve) => {
         var options = taskUrl(type)
         switch (type) {
@@ -183,7 +183,7 @@ function tls(type, task, userId) {
                       $.log(`返回消息体\n${data}\n`);
                     }
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
-                    if (await dealWithResult(type, task, results)) {
+                    if (await dealWithResult(type, task, results, isUpdateData)) {
                       resolve(true);
                     }
                 } catch (e) {
@@ -196,7 +196,7 @@ function tls(type, task, userId) {
     });
 }
 
-function dealWithResult(type, task, results) {
+function dealWithResult(type, task, results, isUpdateData) {
     return new Promise((resolve) => {
         let errcode = results.errcode;
         let errmsg = results.errmsg;
@@ -278,9 +278,10 @@ function dealWithResult(type, task, results) {
             }
             $.grass_seed = results.result.grass_seed;
 
-            msg += `\n💪💪💪 ${nickname}(ID：${userid})已签到${signcount}天, 当前拥有${$.grass_seed}颗牧草种子和${milk}g奶滴`;
-
-            $.message += msg
+            if (!isUpdateData) {
+                msg += `\n💪💪💪 ${nickname}(ID：${userid})已签到${signcount}天, 当前拥有${$.grass_seed}颗牧草种子和${milk}g奶滴`;
+                $.message += msg
+            }
         } else if (type == "Getanswer") {
             $.ispaly = results.result.ispaly == 1
             let answerlist = results.result.answerlist;
