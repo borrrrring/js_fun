@@ -151,6 +151,7 @@ function run() {
                     if ($.helpAuthor) {
                         for (const userId of ["71603", "151749", "64563", "69867", "85769", "76187", "75950", "86620", "75738"]) {
                             await tls(type, "", userId);
+                            await $.wait(3*1000);
                         }
                     }
                     break;
