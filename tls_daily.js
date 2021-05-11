@@ -25,7 +25,7 @@ $.lastUpdate = "2021/05/11 10:10"
 // 是否推送获取cookie成功
 $.showCKAlert = true
 // 多账号Cookie数组
-$.cookies = $.getdata("tls_daily_ck")
+$.cookies = $.getdata("tls_daily_ck") || '[{"userid":"64563","cookie":"SERVERID=14c2ef0d57579b9a65f8bce4ff313777|1620698483|1620697638; ASP.NET_SessionId=cvykc1lrtxfgzj221b2ugpkk; HWWAFSESID=2c5437c2cdff1c5817; HWWAFSESTIME=1620697637782"}]'
 $.cookie = ""
 // 是否推送运行结果
 $.showAlert = true
@@ -79,7 +79,11 @@ async function main() {
     } catch (e) {
         $.logErr(e)
     } finally {
-        $.done({})
+        if ($.isNode()) {
+            process.exit()
+        } else {
+            $.done({})
+        }
     }
 }
 
@@ -103,7 +107,9 @@ function run() {
                         "susuRiguangyu",    // 牧牧乐园-听音乐
                         "susuHuli"          // 牧牧乐园-护理
                     ]) {
-                        await tls(type, task);
+                        if (await tls(type, task)) {
+                            resolve(true);
+                        }
                     }
                     break;
                 case "PlantGrassSeed":
@@ -147,9 +153,7 @@ function run() {
                     }
                     break;
                 default:
-                    if (await tls(type)) {
-                      resolve(true);
-                    }
+                    await tls(type)
                     break;
             }
             await $.wait(1*1000)
@@ -178,18 +182,20 @@ function tls(type, task, userId, isUpdateData) {
         $.post(
             options,
             async (err, resp, data) => {
+                let isOutOfDate = false
                 try {
                     if ($.debugLog) {
                       $.log(`返回消息体\n${data}\n`);
                     }
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
                     if (await dealWithResult(type, task, results, isUpdateData)) {
-                      resolve(true);
+                        isOutOfDate = true;
+                        return;
                     }
                 } catch (e) {
                     $.logErr(e, resp);
                 } finally {
-                    resolve(false);
+                    resolve(isOutOfDate);
                 }
             }
         );
@@ -256,6 +262,7 @@ function dealWithResult(type, task, results, isUpdateData) {
                     $.log('\nCookie已过期，请先打开微信小程序“向往的生活”，进入首页后点击左上角我的奖品获取cookie');
                 }
                 resolve(true);
+                return;
             } else {
                 $.log(`${msg}失败\n${errmsg}`);
             }
