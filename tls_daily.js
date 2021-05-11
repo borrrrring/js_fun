@@ -116,11 +116,13 @@ function run() {
                     if ($.grass_seed < 100) {
                       $.log("\n每次种植至少需要100g草种哦，快去收集草种再来吧")
                     } else {
-                      while ($.grass_seed >= 100) {
+                        let i = 0
+                      while ($.grass_seed >= 100 && i < 5) {
                           await tls(type);
                           await $.wait(3*1000);
                           await tls("TakeMilk");
                           await tls("GetUserInfo", "", "", true);
+                          i++
                       }
                       await tls("GetUserInfo");
                     }
