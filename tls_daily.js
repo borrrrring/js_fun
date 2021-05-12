@@ -159,7 +159,7 @@ function run() {
                     await tls(type)
                     break;
             }
-            await $.wait(1*1000)
+            await $.wait(3*1000)
         }
         await showMsg();
         resolve(false);
