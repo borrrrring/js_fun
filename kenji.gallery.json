@@ -2,7 +2,8 @@
   "name": "js_fun tasks",
   "task": [
     {
-      "config": "0 0 * * * https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js, tag=特仑苏, img-url=https://raw.githubusercontent.com/borrrrring/js_fun/master/tls.png, enabled=false"
+      "config": "0 12 * * * https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.js, tag=特仑苏, img-url=https://raw.githubusercontent.com/borrrrring/js_fun/master/tls.png, enabled=true",
+      "addons":"https://raw.githubusercontent.com/borrrrring/js_fun/master/tls_daily.conf"
     }
   ],
   "description": "https://github.com/borrrrring/js_fun"
