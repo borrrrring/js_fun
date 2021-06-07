@@ -56,25 +56,25 @@ async function main() {
             return;
         }
 
-        let cookies; 
+        let cookies;
         try {
             cookies = JSON.parse($.cookies);
-        } catch(e) {
-          $.log(e)
+        } catch (e) {
+            $.log(e)
         }
         if (typeof cookies != "undefined" && cookies instanceof Array) {
-          for (obj of cookies) {
-            $.message = "";
-            $.answerList = [];
-            $.cookie = obj["cookie"];
-            $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
-            if (await run()) {
-              continue;
+            for (obj of cookies) {
+                $.message = "";
+                $.answerList = [];
+                $.cookie = obj["cookie"];
+                $.log(`当前 🆔 = ${obj["userid"]}, Cookie = ${$.cookie}`);
+                if (await run()) {
+                    continue;
+                }
             }
-          }
         } else {
-          $.cookie = $.cookies;
-          await run();
+            $.cookie = $.cookies;
+            await run();
         }
     } catch (e) {
         $.logErr(e)
@@ -88,7 +88,7 @@ async function main() {
 }
 
 function run() {
-   return new Promise(async (resolve) => {
+    return new Promise(async (resolve) => {
         for (var type of [
             "AddInteraction",   // 完成牧牧乐园任务
             "ClickSign",        // 收集草种-每日签到
@@ -114,44 +114,44 @@ function run() {
                     break;
                 case "PlantGrassSeed":
                     if ($.grass_seed < 100) {
-                      $.log("\n每次种植至少需要100g草种哦，快去收集草种再来吧")
+                        $.log("\n每次种植至少需要100g草种哦，快去收集草种再来吧")
                     } else {
                         let i = 0
-                      while ($.grass_seed >= 100 && i < 5) {
-                          await tls(type);
-                          await $.wait(3*1000);
-                          await tls("TakeMilk");
-                          await tls("GetUserInfo", "", "", true);
-                          i++
-                      }
-                      await tls("GetUserInfo");
+                        while ($.grass_seed >= 100 && i < 5) {
+                            await tls(type);
+                            await $.wait(3 * 1000);
+                            await tls("TakeMilk");
+                            await tls("GetUserInfo", "", "", true);
+                            i++
+                        }
+                        await tls("GetUserInfo");
                     }
                     break;
                 case "AddanswerOrder":
                     if ($.autoAnswer) {
-                      if ($.answerList.length > 0) {
-                        if ($.ispaly) {
-                          $.log("\n本周已经完成闯关。养精蓄锐，下周再来吧！");
+                        if ($.answerList.length > 0) {
+                            if ($.ispaly) {
+                                $.log("\n本周已经完成闯关。养精蓄锐，下周再来吧！");
+                            } else {
+                                $.log("\n开始自动答题…请等待30秒\n");
+                                let seconds = 0;
+                                while (seconds < 30) {
+                                    await $.wait(1 * 1000);
+                                    seconds += 1;
+                                    $.log(`${seconds}秒`)
+                                }
+                                await tls(type);
+                            }
                         } else {
-                          $.log("\n开始自动答题…请等待30秒\n");
-                          let seconds = 0;
-                          while (seconds < 30) {
-                            await $.wait(1*1000);
-                            seconds += 1;
-                            $.log(`${seconds}秒`)
-                          }
-                          await tls(type);
+                            $.log("\n本周闯关尚未开始，活动时间：每周六12:00-周日23:59");
                         }
-                      } else {
-                        $.log("\n本周闯关尚未开始，活动时间：每周六12:00-周日23:59");
-                      }
                     }
                     break;
                 case "AddShare":
                     if ($.helpAuthor) {
                         for (const userId of ["71603", "151749", "64563", "69867", "85769", "76187", "75950", "86620", "75738"]) {
                             await tls(type, "", userId);
-                            await $.wait(3*1000);
+                            await $.wait(3 * 1000);
                         }
                     }
                     break;
@@ -159,11 +159,11 @@ function run() {
                     await tls(type)
                     break;
             }
-            await $.wait(3*1000)
+            await $.wait(3 * 1000)
         }
         await showMsg();
         resolve(false);
-   })
+    })
 }
 
 function tls(type, task, userId, isUpdateData) {
@@ -188,7 +188,7 @@ function tls(type, task, userId, isUpdateData) {
                 let isOutOfDate = false
                 try {
                     if ($.debugLog) {
-                      $.log(`返回消息体\n${data}\n`);
+                        $.log(`返回消息体\n${data}\n`);
                     }
                     let results = JSON.parse(typeof data !== 'undefined' && data.length > 0 ? data : '{"errcode":1,"errmsg":"无信息返回"}');
                     if (await dealWithResult(type, task, results, isUpdateData)) {
@@ -284,7 +284,7 @@ function dealWithResult(type, task, results, isUpdateData) {
             let signcount = results.result.signcount;
             let milk = results.result.milk;
             if (milk >= 300) {
-              $.msg($.name, "已满300g奶滴，快打开小程序去商城兑换吧！");
+                $.msg($.name, "已满300g奶滴，快打开小程序去商城兑换吧！");
             }
             $.grass_seed = results.result.grass_seed;
 
@@ -311,11 +311,11 @@ function dealWithResult(type, task, results, isUpdateData) {
 
                     // 处理答案
                     let answerObj = {
-                                        "question_id": `${obj.id}`,
-                                        "question_answer": `${obj.answer_right}`,
-                                        "time_interval": ""
-                                      };
-                                      $.answerList.push(answerObj);
+                        "question_id": `${obj.id}`,
+                        "question_answer": `${obj.answer_right}`,
+                        "time_interval": ""
+                    };
+                    $.answerList.push(answerObj);
                 }
 
                 msg += `\n🎊🎊🎊 特仑苏限时闯关正确答案：${answer}`;
@@ -324,15 +324,15 @@ function dealWithResult(type, task, results, isUpdateData) {
             } else {
                 msg += "失败";
                 if (!$.autoAnswer) {
-                  msg += "\n活动时间：每周六12:00-周日23:59";
+                    msg += "\n活动时间：每周六12:00-周日23:59";
                 }
             }
         } else if (type == "AddanswerOrder") {
             msg += "成功";
             let getalfalfa = results.result.getalfalfa;
             msg += `\n获得${getalfalfa}g 草种奖励`;
-      
-            $.message += msg         
+
+            $.message += msg
         } else if (type == "AddShare") {
             msg += "成功, 草种 +100g";
 
@@ -386,34 +386,32 @@ function getCookie() {
             let userid = getQueryParam(referer, "UserID");
             let newCookie = headers.Cookie;
             
+            let isUpdateCK = false
             $.log(`USERID：\n${userid} COOKIE：\n${newCookie}\n`)
             let oldCookies;
             try {
-              oldCookies = JSON.parse($.getdata("tls_daily_ck"));
-            } catch(e) {
-              $.log(e);
+                oldCookies = JSON.parse($.getdata("tls_daily_ck"));
+            } catch (e) {
+                $.log(e);
             }
             let finalCookies = "";
             if (typeof oldCookies != "undefined" && oldCookies instanceof Array) {
-              for (obj of oldCookies) {
-                if (obj["userid"] == userid && obj["cookie"] != newCookie) {
-                  //let components = newCookie.split(";");
-                  //for ( let element of components) {
-                  //  if (element.indexOf("ASP.NET") != -1) { 
-                  //    newCookie = element;
-                  //    break;
-                  //  }
-                  //}
-                  obj["cookie"] = newCookie;
-                  //$.msg($.name, `更新账号：${userid}`, newCookie);
-                }
-              }
 
-              finalCookies = JSON.stringify(oldCookies);
+                for (obj of oldCookies) {
+                    if (obj["userid"] == userid && obj["cookie"] != newCookie) {
+                        obj["cookie"] = newCookie;
+                        isUpdateCK = true
+                    }
+                }
+                if (!isUpdateCK) {
+                    oldCookies.push([{ "userid": userid, "cookie": newCookie }])
+                }
+
+                finalCookies = JSON.stringify(oldCookies);
             } else {
-              finalCookies = JSON.stringify([{"userid": userid, "cookie": newCookie}]);
+                finalCookies = JSON.stringify([{ "userid": userid, "cookie": newCookie }]);
             }
-            
+
             var ret = $.setdata(finalCookies, "tls_daily_ck");
             if ($.showCKAlert && ret) {
                 $.msg($.name, '写入ck成功', $.getdata("tls_daily_ck"));
