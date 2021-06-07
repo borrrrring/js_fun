@@ -398,7 +398,7 @@ function getCookie() {
             if (typeof oldCookies != "undefined" && oldCookies instanceof Array) {
 
                 for (obj of oldCookies) {
-                    if (obj["userid"] == userid && obj["cookie"] != newCookie) {
+                    if (obj["userid"] == userid) {
                         obj["cookie"] = newCookie;
                         isUpdateCK = true
                     }
