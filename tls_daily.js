@@ -404,7 +404,7 @@ function getCookie() {
                     }
                 }
                 if (!isUpdateCK) {
-                    oldCookies.push([{ "userid": userid, "cookie": newCookie }])
+                    oldCookies.push({ "userid": userid, "cookie": newCookie })
                 }
 
                 finalCookies = JSON.stringify(oldCookies);
