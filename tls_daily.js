@@ -370,9 +370,9 @@ function taskUrl(function_path) {
 function showMsg() {
     return new Promise(resolve => {
         if ($.showAlert) {
-            $.msg($.name, '', `${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`);
+            $.msg($.name, '', `${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`, {"media-url": "https://raw.githubusercontent.com/borrrrring/js_fun/master/tls.png"});
         } else {
-            $.log(`${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`)
+            $.log(`${$.message}\n该脚本最后更新于：${$.lastUpdate} by Kenji`, {"media-url": "https://raw.githubusercontent.com/borrrrring/js_fun/master/tls.png"})
         }
         resolve();
     });
