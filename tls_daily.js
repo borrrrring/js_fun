@@ -149,7 +149,7 @@ function run() {
                     break;
                 case "AddShare":
                     if ($.helpAuthor) {
-                        for (const userId of ["71603", "151749", "64563", "69867", "85769", "76187", "75950", "86620", "75738"]) {
+                        for (const userId of ["71603", "64563", "69867", "5364449", "151749", "85769", "76187", "75950", "86620", "75738"]) {
                             await tls(type, "", userId);
                             await $.wait(3 * 1000);
                         }
